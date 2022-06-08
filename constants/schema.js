@@ -3,7 +3,7 @@ const Constants = require('../constants/appConstants');
 module.exports = {
     client_code : {
         enum : {
-            id: '/enum',
+            id: '/data',
             type: 'object',
             required: ['loan_code'],
             properties: {

@@ -7,28 +7,28 @@ const EnumBiz = require('../biz/enum.biz');
 class EnumController {
 	register(app) {
 		/**
-		 * @api {post} v1/enum/ Create enum
+		 * @api {get} v1/data/ Get enum
 		 * @apiVersion 1.0.0
-		 * @apiName CreateEnum
+		 * @apiName GetEnum
 		 * @apiGroup Enum
 		 * @apiPermission admin
 		 *
-		 * @apiDescription This endpoint will create a enum!
+		 * @apiDescription This endpoint will get a enum depending on vendor!
 		 *
 		 * @apiHeader {String} client_code will be shared to you .
 		 * @apiHeaderExample {Header} Header-Example
 		 *     "client_code: client_code"
 		 *
 		 * @apiExample {bash} Curl example
-		 * curl -X POST -H "client_code: client_code" -i https://console.flexiloans.com/v1/enum
+		 * curl -X GET -H "client_code: client_code" -i https://console.neo.com/v1/data
 		 *
-		 * @apiSuccess {String} result <code>created</code> if everything went fine.
+		 * @apiSuccess {String} result <code>Fetched</code> if everything went fine.
 		 * @apiSuccessExample {json} Success-Example
-		 *     HTTP/1.1 201 CREATED
+		 *     HTTP/1.1 201 FETCHED
 		 *      {
 		 *			"success": true,
-		 *			"event": "ENUM_CREATED",
-		 *			"message": "created enum successfully.",
+		 *			"event": "ENUM_FETCHED",
+		 *			"message": "fetched enum successfully.",
 		 *			"uuid": "e043e090-758f-11eb-833e-1b36d8ab14c1",
 		 *			"data": {}
 		 *		}
@@ -43,38 +43,7 @@ class EnumController {
 		 *       "error": "NoAccessRight"
 		 *     }
 		 */
-		app.route('/v1/enum')
-		.post(async (request, response, next) => {
-			try {
-				const {
-					client_code
-				} = request.header;
-				const validator = new RequestValidator(enumSchema);
-				validator.create({...request.params,...request.body});
-
-				const enumBiz = new EnumBiz();
-				const _result = await enumBiz.create({...request.params,...request.body});
-				
-				const responseDecorator = new ResponseDecorator({...request.params,...request.body,client_code});
-				const result = responseDecorator.decorate(_result);
-				
-				response.json({
-					result,
-				}, `created enum successfully.`, {
-					services: [
-						CONSTANTS.LOGGING
-					],
-					data: { 
-							action : CONSTANTS.ACTION.ENUM_CREATED,
-							headers : { ...request.headers},
-							request: {...request.params,...request.body},
-							response: result
-				}
-				});
-			} catch (error) {
-				next(error);
-			}
-		})
+		app.route('/v1/data')
 		.get(async (request, response, next) => {
 			try {
 				const {
@@ -85,7 +54,7 @@ class EnumController {
 				validator.create({...request.params,...request.query});
 
 				const enumBiz = new EnumBiz();
-				const _result = await enumBiz.fetch({...request.params,...request.query});
+				const _result = await enumBiz.fetch({...request.params,...request.query,...request.body});
 				
 				const responseDecorator = new ResponseDecorator({...request.params,...request.query});
 				const result = responseDecorator.decorate(_result);
@@ -99,37 +68,6 @@ class EnumController {
 					data: { 
 							action : CONSTANTS.ACTION.ENUM_FETCHED,
 							request: {...request.params,...request.query,client_code},
-							response: result
-				}
-				});
-			} catch (error) {
-				next(error);
-			}
-		})
-		.put(async (request, response, next) => {
-			try {
-				const {
-					client_code
-				} = request.header;
-				
-				const validator = new RequestValidator(enumSchema);
-				validator.create({...request.params,...request.body,...request.query});
-
-				const enumBiz = new EnumBiz();
-				const _result = await enumBiz.update({...request.params,...request.body,...request.query});
-				
-				const responseDecorator = new ResponseDecorator({...request.params,...request.body,...request.query});
-				const result = responseDecorator.decorate(_result);
-				
-				response.json({
-					result,
-				}, `updated enum successfully.`, {
-					services: [
-						CONSTANTS.LOGGING
-					],
-					data: { 
-							action : CONSTANTS.ACTION.ENUM_UPDATED,
-							request: {...request.params,...request.body,...request.query,client_code},
 							response: result
 				}
 				});

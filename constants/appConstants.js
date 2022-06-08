@@ -16,6 +16,10 @@ module.exports = {
 	DOCUMENT_SOURCE : 'LOS',
 	REQUEST_ID_PREFIX : 'OFFER',
 	DOCUMENT_SECTION : '',
+	VENDOR: 'vendor',
+	MAPPING_KEY: 'mapping_key',
+	MAPPING_NAME: 'mapping_name',
+	TYPE_KEY: 'type_key',
 	CURRENT_TIMESTAMP : 'CURRENT_TIMESTAMP',
 	DEFAULT_DATE_FORMAT : 'YYYY-MM-DD HH:mm:ss',
 	CSV : 'CSV',
@@ -38,7 +42,7 @@ module.exports = {
 		'/init' : {
 			GET : 'CHECK_APPLICATION_HEALTH'
 		},
-		'/v1/enum' : {
+		'/v1/data' : {
 			POST : 'ENUM_CREATED',
 			PUT : 'ENUM_UPDATED',
 			GET : 'ENUM_UPDATED'
