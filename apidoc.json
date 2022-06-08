@@ -1,0 +1,21 @@
+{
+  "name": "ENUM_SERVICE",
+  "version": "1.0.0",
+  "description": "Enum Service commpn for all which gets the enum values",
+  "title": "Enum API",
+  "url" : "https://console.neo.com",
+  "sampleUrl": "https://console.neo.com",
+  "header": {
+    "title": "Introduction",
+    "filename": "header.md"
+  },
+  "footer": {
+    "title": "Closing",
+    "filename": "footer.md"
+  },
+  "template": {
+    "withCompare": true,
+    "withGenerator": true,
+    "aloneDisplay": false
+  }
+}
