@@ -1,8 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["createMany"]
 }
 
 datasource db {
@@ -10,3 +8,65 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model EnumOfEnums {
+  id          Int          @id @default(autoincrement())
+  type_key    String       @unique(map: "type_key") @db.VarChar(255)
+  description String?      @db.VarChar(255)
+  is_active   Int?         @default(1) @db.TinyInt
+  created_at  DateTime?    @default(now()) @db.Timestamp(0)
+  updated_at  DateTime?    @default(now()) @updatedAt @db.DateTime(0)
+  enum_values EnumValues[] @relation("enum_of_enumsToenum_values")
+
+  @@map("enum_of_enums")
+}
+
+model EnumValues {
+  id                  Int                 @id @default(autoincrement())
+  type_key            String              @unique(map: "type_key") @db.VarChar(255)
+  description         String?             @db.VarChar(255)
+  enum_id             Int
+  is_active           Int?                @default(1) @db.TinyInt
+  created_at          DateTime?           @default(now()) @db.Timestamp(0)
+  updated_at          DateTime?           @default(now()) @updatedAt @db.DateTime(0)
+  enum_of_enums       EnumOfEnums         @relation("enum_of_enumsToenum_values", fields: [enum_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "enum_values_ibfk_1")
+  enum_vendor_mapping EnumVendorMapping[] @relation("enum_valuesToenum_vendor_mapping")
+
+  @@index([enum_id], map: "enum_id")
+  @@map("enum_values")
+}
+
+model Vendor {
+  id                  Int                 @id @default(autoincrement())
+  name                String              @unique(map: "name") @db.VarChar(255)
+  is_active           Int?                @default(1) @db.TinyInt
+  priority            Int?                @default(0) @db.TinyInt
+  created_at          DateTime?           @default(now()) @db.Timestamp(0)
+  updated_at          DateTime?           @default(now()) @updatedAt @db.DateTime(0)
+  enum_vendor_mapping EnumVendorMapping[] @relation("enum_vendor_mappingTovendor")
+
+  @@map("vendor")
+}
+
+model EnumVendorMapping {
+  id            Int        @id @default(autoincrement())
+  vendor_id     Int
+  mapping_name  String?    @db.VarChar(255)
+  mapping_key   String?    @db.VarChar(255)
+  description   String?    @db.VarChar(255)
+  enum_value_id Int
+  is_active     Int?       @default(1) @db.TinyInt
+  created_at    DateTime?  @default(now()) @db.Timestamp(0)
+  updated_at    DateTime?  @default(now()) @updatedAt @db.DateTime(0)
+  enum_values   EnumValues @relation("enum_valuesToenum_vendor_mapping", fields: [enum_value_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "enum_vendor_mapping_ibfk_1")
+  vendor        Vendor     @relation("enum_vendor_mappingTovendor", fields: [vendor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "enum_vendor_mapping_ibfk_2")
+
+  @@unique([vendor_id, mapping_name, mapping_key, enum_value_id], map: "unique_enum")
+  @@index([enum_value_id], map: "enum_value_id")
+  @@map("enum_vendor_mapping")
+}
+
+model test {
+  id          Int    @id @default(autoincrement())
+  type_key    String @unique
+  description String
+}
