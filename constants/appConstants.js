@@ -34,7 +34,7 @@ module.exports = {
 		ENUM_FETCHED : 'ENUM_FETCHED'
 
 	},
-	SEARCH_LIST : ["loan_code", "loanCode", "code"],
+	SEARCH_LIST : ["loan_code", "loanCode", "code", "vendor"],
 	EVENT : {
 		'/' : {
 			GET : 'API_DOCUMENTATION'
@@ -42,10 +42,10 @@ module.exports = {
 		'/init' : {
 			GET : 'CHECK_APPLICATION_HEALTH'
 		},
-		'/v1/data' : {
+		'/enum/v1/data' : {
 			POST : 'ENUM_CREATED',
 			PUT : 'ENUM_UPDATED',
-			GET : 'ENUM_UPDATED'
+			GET : 'ENUM_FETCHED'
 		}
 	}
 };

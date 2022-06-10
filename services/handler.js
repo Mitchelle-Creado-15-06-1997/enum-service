@@ -17,7 +17,8 @@ class ServiceHandler {
 							action: log.action,
 							headers: log.headers,
 							request: log.request,
-							response: log.response
+							response: log.response,
+							vendor: log.request.vendor
 						}
 						logger.request(result);
 						break;

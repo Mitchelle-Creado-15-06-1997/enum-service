@@ -13,19 +13,22 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const httpContext = require('express-http-context');
-// const logger = require('./services/winstonLogging');
+const logger = require('./services/winstonLogging');
 // const consoleLogger = require('./services/console.logging');
-// const mongoConnect = require('./db/mongoConnection');
+const mongoConnect = require('./db/mongoConnection');
+const swaggerDocumentation = require('./swagger/swagger.json');
+const swaggerUI = require("swagger-ui-express");
+// const swaggerJsDoc = require("swagger-jsdoc");
 
-
-// const { 
-// 	errorHandlingMiddleware, 
-// 	responseMiddleware, 
-// 	requestMiddleware, 
-// } = require('./middleware');
+const { 
+	errorHandlingMiddleware, 
+	responseMiddleware, 
+	requestMiddleware, 
+} = require('./middleware');
 
 const app = express();
 
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocumentation))
 app.use(bodyParser.json());
 app.use(bodyParser.text());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -40,23 +43,23 @@ app.use(express.static('public'))
 
 
 // Do not change order below this
-// app.use(requestMiddleware);
+app.use(requestMiddleware);
 
-// app.use(responseMiddleware);
+app.use(responseMiddleware);
 
 // Routes will always go here 
 app.use('/enum', require('./routes/urls'));
 
-// app.use(errorHandlingMiddleware);
+app.use(errorHandlingMiddleware);
 // Do not change order above this
 
 //staring mongo connection
-// mongoConnect(()=>{
-// 	console.log('Mongo server connected');
-//   });
+mongoConnect(()=>{
+    console.log('Mongo server connected');
+});
 
-//error logger global
-// global.logger = logger();
+// error logger global
+global.logger = logger();
 
 //console logging
 // consoleLogger();

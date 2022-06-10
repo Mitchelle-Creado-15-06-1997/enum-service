@@ -2,13 +2,15 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const QUERY = require('../constants/queryRepo');
 const QueryBuilderBiz = require('./helpers/query-builder.biz');
-const SqlBiz = require('./helpers/sql.biz')
+const SqlBiz = require('./helpers/sql.biz');
+const { PreconditionFailedException } = require('../exceptions');
 class EnumBiz {
 	constructor() {
 		this.sqlBiz = new SqlBiz();
 		this.queryBuilderBiz = new QueryBuilderBiz();
 	}
 
+	
 	create(data) {
 		return new Promise(async (resolve, reject) => {
 			try {
@@ -41,7 +43,10 @@ class EnumBiz {
 				if(data.type_key) query_data = (query_data ? query_data + ' and ' : '') + `eoe.type_key = '${data.type_key}'`; 
 				query_data = (query_data ? query_data + ' and ' : '') + `evm.is_active = 1 and ev.is_active = 1`;
 				// result = await this.sqlBiz.get_one(null, QUERY.SQL.SELECT['enum'] + query_data);
-				result = await prisma.$queryRawUnsafe(QUERY.SQL.SELECT['enum'] + query_data)
+				result = await prisma.$queryRawUnsafe(QUERY.SQL.SELECT['enum'] + query_data);
+				if (!result || !result.length) {
+					throw new PreconditionFailedException();
+				}
 				resolve(result);
 			} catch(error){
 				return reject(error);
