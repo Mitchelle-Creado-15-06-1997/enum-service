@@ -6,10 +6,6 @@ const EnumBiz = require('../biz/enum.biz');
 
 class EnumController {
 	register(app) {
-
- 
-
-		
 		app.route('/v1/data')
 		.get(async (request, response, next) => {
 			try {
